@@ -39,7 +39,6 @@ router.get('/:id?', function (req, res, next) {
             });
         }
     } else {
-        res.send(reviews);
         res.render('reviews', {
             reviews: reviews
         });
@@ -52,19 +51,31 @@ router.post('/', function (req, res, next) {
     res.sendStatus(201);
 });
 
-router.delete('/', function (req, res, next) {
-    reviews = [];
-});
-
-router.delete('/:id', function (req, res, next) {
+router.put('/:id', function (req, res, next) {
     reviews.forEach(function (r) {
         if (r.id == req.params.id) {
             var index = reviews.indexOf(r);
-            console.log(index);
-            reviews.splice(index, 1);
+            console.log(req.body);
+            reviews[index] = req.body;
+            res.sendStatus(202);
         }
     });
-    res.send(reviews);
+});
+
+router.delete('/:id?', function (req, res, next) {
+    var id = req.params.id;
+    if (id) {
+        reviews.forEach(function (r) {
+            if (r.id == req.params.id) {
+                var index = reviews.indexOf(r);
+                console.log(index);
+                reviews.splice(index, 1);
+            }
+        });
+    } else {
+        reviews = [];
+    }
+    res.sendStatus(204);
 });
 
 module.exports = router;
