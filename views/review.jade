@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  a(href='/reviews') <-
+
+  if msg
+    center
+      h1= msg
+ 
+  else
+    center
+      h1= review.name
+      a(href='/reviews/#{review.id}/edit')
+        img(src='https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/new-24-128.png' height="30")
+        br
+        a(href='/reviews/#{review.id}/delete')
+          img(src='http://t1.gstatic.com/images?q=tbn:ANd9GcQCjIGT3gxgEoL02qdZQvV3zQauUrJSOXU5g1AbDhsJuG0Yr84-0TKYp40L0w' height="60")

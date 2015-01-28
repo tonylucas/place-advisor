@@ -1,0 +1,12 @@
+extends layout
+
+if reviews
+  block content
+    h1 Liste des reviews
+    ul
+      each review in reviews
+        li 
+          a(href='reviews/#{review.id}')
+             h3= review.name
+          - for (var x = 0; x < review.stars; x++)
+            img(src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/star-128.png" height="20")
