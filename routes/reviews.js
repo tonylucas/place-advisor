@@ -1,57 +1,45 @@
 var express = require('express');
 var router = express.Router();
+var Review = require('../database/reviews');
 
-var reviews = [
-    {
-        id: 1,
-        name: 'McDo',
-        placeType: 'Fastfood',
-        stars: 3
-    }, {
-        id: 2,
-        name: 'Quick',
-        placeType: 'Fastfood',
-        stars: 2
-    }, {
-        id: 3,
-        name: 'Domino\'s Pizza',
-        placeType: 'Restaurant',
-        stars: 4
-    }
-]
+router
+    .get('/:id?', function (req, res, next) {
+        var id = req.params.id;
+        if (id) {
+            var review;
 
-router.get('/:id?', function (req, res, next) {
-    var id = req.params.id;
-    if (id) {
-        var review;
-        reviews.forEach(function (r) {
-            if (r.id == id)
-                review = r;
-        });
-
-        if (review) {
-            res.render('review', {
-                review: review
+            Reviews.find({
+                _id: id
+            }, function (err, reviews) {
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(404);
+                } else {
+                    res.send(review);
+                }
             });
         } else {
-            res.render('review', {
-                msg: "Review introuvable :/"
+            Reviews.find({}, function (err, reviews) {
+                if (err) {
+                    res.status(500).send({
+                        'error': err
+                    });
+                } else {
+                    res.send(reviews);
+                }
             });
+
         }
-    } else {
-        res.render('reviews', {
-            reviews: reviews
-        });
-    }
-});
+    })
 
 
-router.post('/', function (req, res, next) {
-    reviews.push(req.body);
-    res.sendStatus(201);
-});
+.post('/', function (req, res, next) {
+    Review.create(req.body, function(err, review){
+        res.status(201).send(review); 
+    });
+})
 
-router.put('/:id', function (req, res, next) {
+.put('/:id', function (req, res, next) {
     reviews.forEach(function (r) {
         if (r.id == req.params.id) {
             var index = reviews.indexOf(r);
@@ -60,22 +48,34 @@ router.put('/:id', function (req, res, next) {
             res.sendStatus(202);
         }
     });
-});
+})
 
-router.delete('/:id?', function (req, res, next) {
+.delete('/:id?', function (req, res, next) {
     var id = req.params.id;
     if (id) {
-        reviews.forEach(function (r) {
-            if (r.id == req.params.id) {
-                var index = reviews.indexOf(r);
-                console.log(index);
-                reviews.splice(index, 1);
-            }
+//        var index;
+//        reviews.forEach(function (review) {
+//            if (review.id == id) {
+//                index = reviews.indexOf(review);
+//                console.log(index);
+//            }
+//        });
+//        if (index) {
+//            reviews.splice(index, 1);
+//            res.sendStatus(204);
+//        } else {
+//            res.sendStatus(404);
+//        }
+        Reviews.remove({_id: id}, function(){
+            res.sendStatus(204); 
         });
+
     } else {
-        reviews = [];
+        Reviews.remove({}, function(){
+            res.sendStatus(204); 
+        });
     }
-    res.sendStatus(204);
+
 });
 
 module.exports = router;
