@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1 Ajouter une review
+  a(href="/reviews") Annuler
+
+  form(id="edit-form")
+    label Nom :
+    input(type="text", name="name")
+    br
+    label Type :
+    input(type="text", name="placeType")
+    br
+    Label Classement (1 à 5) :
+    input(type="text", name="stars")
+    br
+    input(type="button", value="Ajouter", id="createReview")

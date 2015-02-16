@@ -2,13 +2,11 @@ extends layout
 
 if reviews
   block content
-    h1 Liste des reviews
+    h1 Top 3
     
     table
-        tr 
-          a(href='/reviews/create') Ajouter &nbsp;
-          a(href='/reviews/topplaces') Top 3 &nbsp;
-          a(href='/reviews/search') Rechercher
+        tr
+          a(href='/reviews') All reviews
         each review in reviews
           tr
             td
@@ -23,3 +21,4 @@ if reviews
             td
               a(href="#" class="removeReview" data-id="#{review.id}")
                 img(src="/images/delete.png" height="32")
+    

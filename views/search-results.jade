@@ -2,13 +2,16 @@ extends layout
 
 if reviews
   block content
-    h1 Liste des reviews
+    h1 Résultats de la recherche
     
     table
         tr 
-          a(href='/reviews/create') Ajouter &nbsp;
-          a(href='/reviews/topplaces') Top 3 &nbsp;
-          a(href='/reviews/search') Rechercher
+          a(href='/reviews') All reviews
+        if msg
+          tr
+            td
+              strong=msg
+            
         each review in reviews
           tr
             td
