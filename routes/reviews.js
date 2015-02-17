@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Review = require('../database/reviews');
+var Review = require('../database/reviews.js');
 
 router.route('/')
     .post(function (req, res, next) {
