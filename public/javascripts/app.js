@@ -3,7 +3,7 @@ $(document).ready(function () {
         var reviewId = $(target.currentTarget).attr("data-id");
         $.ajax({
             type: "PUT",
-            url: "http://localhost:3000/reviews/" + reviewId,
+            url: "/reviews/" + reviewId,
             data: $('#edit-form').serialize(),
             success: function (data, textStatus, jqXHR) {
                 window.location.replace("/reviews");
@@ -16,7 +16,7 @@ $(document).ready(function () {
         console.log(reviewId);
         $.ajax({
             type: "DELETE",
-            url: "http://localhost:3000/reviews/" + reviewId,
+            url: "/reviews/" + reviewId,
             success: function (data, textStatus, jqXHR) {
                 window.location.replace("/reviews");
             }
@@ -28,7 +28,7 @@ $(document).ready(function () {
         $.ajax({
             type: "POST",
             data: $('#edit-form').serialize(),
-            url: "http://localhost:3000/reviews/",
+            url: "/reviews/",
             success: function (data, textStatus, jqXHR) {
                 window.location.replace("/reviews");
             }
