@@ -2,6 +2,10 @@ var express = require('express');
 var router = express.Router();
 var Reviews = require('../database/reviews');
 
+
+console.log("Reviews");
+console.log(Reviews);
+
 router.route('/')
     .post(function (req, res, next) {
         Reviews.create(req.body, function (err, review) {
