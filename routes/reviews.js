@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var Review = require('../database/reviews.js');
+var Reviews = require('../database/reviews');
 
 router.route('/')
     .post(function (req, res, next) {
-        Review.create(req.body, function (err, review) {
+        Reviews.create(req.body, function (err, review) {
             res.status(201).send(review);
         });
     });
@@ -49,19 +49,19 @@ router.route('/result')
 
         // Checking parameters in URL
         if(req.query.name) {
-            Review.find({name: req.query.name}, function (err, reviews) {
+            Reviews.find({name: req.query.name}, function (err, reviews) {
                 sendResult(err, reviews);
             });
         } else if(req.query.stars) {
-            Review.find({stars: req.query.stars}, function (err, reviews) {
+            Reviews.find({stars: req.query.stars}, function (err, reviews) {
                 sendResult(err, reviews);
             });
         } else if(req.query.type != "") {
-            Review.find({placeType: req.query.type}, function (err, reviews) {
+            Reviews.find({placeType: req.query.type}, function (err, reviews) {
                 sendResult(err, reviews);
             });
         } else { // Nothing shown if search in URL but no parameters
-            Review.find(function (err, reviews) {
+            Reviews.find(function (err, reviews) {
                 sendResult(err, []);
             });
         }
@@ -69,7 +69,7 @@ router.route('/result')
 
 router.route('/topplaces')
     .get(function (req, res, next) {
-        Review.find().sort([['stars', 'descending']]).limit(3).find(function (err, reviews) {
+        Reviews.find().sort([['stars', 'descending']]).limit(3).find(function (err, reviews) {
             if (err) {
                 res.status(500).send({
                     'error': err
@@ -93,7 +93,7 @@ router.route('/:id?')
     .get(function (req, res, next) {
             var id = req.params.id;
             if (id) {
-                Review.findById(id, function (err, review) {
+                Reviews.findById(id, function (err, review) {
                     if (err) {
                         res.sendStatus(404);
                     } else {
@@ -109,7 +109,7 @@ router.route('/:id?')
                     }
                 });
             } else {
-                Review.find(function (err, reviews) {
+                Reviews.find(function (err, reviews) {
                     if (err) {
                         res.status(500).send({
                             'error': err
@@ -130,7 +130,7 @@ router.route('/:id?')
             }
     })
     .put(function (req, res, next) {
-        Review.findByIdAndUpdate(
+        Reviews.findByIdAndUpdate(
             req.params.id,
             req.body,
             function (err, review) {
@@ -144,12 +144,12 @@ router.route('/:id?')
     .delete(function (req, res, next) {
         var id = req.params.id;
         if (id) {
-            Review.findByIdAndRemove(id, function () {
+            Reviews.findByIdAndRemove(id, function () {
                 res.sendStatus(204);
             });
 
         } else {
-            Review.remove({}, function () {
+            Reviews.remove({}, function () {
                 res.sendStatus(204);
             });
         }
@@ -159,7 +159,7 @@ router.route('/edit/:id')
     .get(function (req, res, next) {
         var id = req.params.id;
         if (id) {
-            Review.findById(id, function (err, review) {
+            Reviews.findById(id, function (err, review) {
                 if (err) {
                     res.sendStatus(404);
                 } else {
