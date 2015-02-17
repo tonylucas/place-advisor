@@ -1,7 +1,6 @@
 {
   "name": "TP1",
   "version": "0.0.1",
-  "private": true,
   "author": "Tony Lucas",
   "description": "Place Advisor permet d'enregister des évaluation sur des endroits.",
   "scripts": {
@@ -19,6 +18,6 @@
     "serve-favicon": "~2.2.0"
   },
   "engines": {
-    "node": "0.10.36"
+    "node": "0.10.x"
   }
 }
