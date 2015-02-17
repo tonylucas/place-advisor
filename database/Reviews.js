@@ -7,6 +7,4 @@ var reviewsSchema = new Schema({
     stars: Number
 });
 
-var Reviews = mongoose.model('reviews', reviewsSchema);
-
-module.exports = Reviews;
+module.exports = mongoose.model('Reviews', reviewsSchema);
