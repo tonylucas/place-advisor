@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1 Éditer une review
+  a(href="/reviews/#{review.id}") Annuler
+  
+  form(id="edit-form")
+    label Nom :
+    input(type="text", name="name", value="#{review.name}")
+    br
+    label Type :
+    input(type="text", name="placeType", value="#{review.placeType}")
+    br
+    Label Classement (1 à 5) :
+    input(type="text", name="stars", value="#{review.stars}")
+    br
+    input(type="button", value="Valider", data-id="#{review.id}", id="updateReview")

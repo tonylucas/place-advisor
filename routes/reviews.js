@@ -1,70 +1,181 @@
 var express = require('express');
 var router = express.Router();
+var Reviews = require('../database/reviews');
 
-var reviews = [
-    {
-        id: 1,
-        name: 'McDo',
-        placeType: 'Fastfood',
-        stars: 3
-    }, {
-        id: 2,
-        name: 'Quick',
-        placeType: 'Fastfood',
-        stars: 2
-    }, {
-        id: 3,
-        name: 'Domino\'s Pizza',
-        placeType: 'Restaurant',
-        stars: 4
-    }
-]
 
-router.get('/:id?', function (req, res, next) {
-    var id = req.params.id;
-    if (id) {
-        var review;
-        reviews.forEach(function (r) {
-            if (r.id == id)
-                review = r;
+router.route('/')
+    .post(function (req, res, next) {
+        Reviews.create(req.body, function (err, review) {
+            res.status(201).send(review);
         });
+    });
 
-        if (review) {
-            res.render('review', {
-                review: review
-            });
-        } else {
-            res.render('review', {
-                msg: "Review introuvable :/"
-            });
+
+router.route('/create')
+.get(function (req, res, next) {
+    res.render('create');
+})
+
+router.route('/search')
+    .get(function (req, res, next) {
+        res.render('search');
+    });
+
+router.route('/result')
+    .get(function (req, res, next) {
+        var sendResult = function (err, reviews) {
+            if (err != null) {
+                res.status(500).send({
+                    'error': err
+                });
+            } else {
+                var msg;
+
+                if(!reviews.length){
+                    msg = "Aucune review trouvée";
+                }
+
+                if (req.accepts('html')) {
+                    res.render('search-results', {
+                        reviews: reviews,
+                        msg: msg
+                    });
+                } else if (req.accepts('application/json')) {
+                    res.send(reviews);
+                } else {
+                    res.sendStatus(406);
+                }   
+            }
         }
-    } else {
-        res.send(reviews);
-        res.render('reviews', {
-            reviews: reviews
-        });
-    }
-});
 
-
-router.post('/', function (req, res, next) {
-    reviews.push(req.body);
-    res.sendStatus(201);
-});
-
-router.delete('/', function (req, res, next) {
-    reviews = [];
-});
-
-router.delete('/:id', function (req, res, next) {
-    reviews.forEach(function (r) {
-        if (r.id == req.params.id) {
-            var index = reviews.indexOf(r);
-            console.log(index);
-            reviews.splice(index, 1);
+        // Checking parameters in URL
+        if(req.query.name) {
+            Reviews.find({name: req.query.name}, function (err, reviews) {
+                sendResult(err, reviews);
+            });
+        } else if(req.query.stars) {
+            Reviews.find({stars: req.query.stars}, function (err, reviews) {
+                sendResult(err, reviews);
+            });
+        } else if(req.query.type != "") {
+            Reviews.find({placeType: req.query.type}, function (err, reviews) {
+                sendResult(err, reviews);
+            });
+        } else { // Nothing shown if search in URL but no parameters
+            Reviews.find(function (err, reviews) {
+                sendResult(err, []);
+            });
         }
     });
-    res.send(reviews);
-});
+
+router.route('/topplaces')
+    .get(function (req, res, next) {
+        Reviews.find().sort([['stars', 'descending']]).limit(3).find(function (err, reviews) {
+            if (err) {
+                res.status(500).send({
+                    'error': err
+                });
+            } else {
+                console.log(req.accept);
+                if (req.accepts('html')) {
+                    res.render('topplaces', {
+                        reviews: reviews
+                    });
+                } else if (req.accepts('application/json')) {
+                    res.send(reviews);
+                } else {
+                    res.sendStatus(406);
+                }
+            }
+        });
+    });
+
+router.route('/:id?')
+    .get(function (req, res, next) {
+            var id = req.params.id;
+            if (id) {
+                Reviews.findById(id, function (err, review) {
+                    if (err) {
+                        res.sendStatus(404);
+                    } else {
+                        if (req.accepts('html')) {
+                            res.render('review', {
+                                review: review
+                            });
+                        } else if (req.accepts('application/json')) {
+                            res.send(review);
+                        } else {
+                            res.sendStatus(406);
+                        }
+                    }
+                });
+            } else {
+                Reviews.find(function (err, reviews) {
+                    if (err) {
+                        res.status(500).send({
+                            'error': err
+                        });
+                    } else {
+                        if (req.accepts('html')) {
+                            res.render('reviews', {
+                                reviews: reviews
+                            });
+                        } else if (req.accepts('application/json')) {
+                            res.send(reviews);
+                        } else {
+                            res.sendStatus(406);
+                        }
+                    }
+                });
+
+            }
+    })
+    .put(function (req, res, next) {
+        Reviews.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            function (err, review) {
+                if (err) {
+                    res.sendStatus(404);
+                } else {
+                    res.sendStatus(204);
+                }
+            });
+    })
+    .delete(function (req, res, next) {
+        var id = req.params.id;
+        if (id) {
+            Reviews.findByIdAndRemove(id, function () {
+                res.sendStatus(204);
+            });
+
+        } else {
+            Reviews.remove({}, function () {
+                res.sendStatus(204);
+            });
+        }
+    });
+
+router.route('/edit/:id')
+    .get(function (req, res, next) {
+        var id = req.params.id;
+        if (id) {
+            Reviews.findById(id, function (err, review) {
+                if (err) {
+                    res.sendStatus(404);
+                } else {
+                    res.render('edit', {
+                        review: review
+                    });
+                }
+            });
+        } else {
+
+            res.sendStatus(404);
+        }
+    });
+
+
+
 
 module.exports = router;

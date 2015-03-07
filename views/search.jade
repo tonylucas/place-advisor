@@ -1,0 +1,24 @@
+extends layout
+
+if reviews
+  block content
+    h1 Rechercher une review
+    a(href='/reviews') Annuler
+    
+    h2 Rechercher par nom
+    form(action='/reviews/result', method='get')
+      label Nom : 
+      input(type="text", name="name", id="name")
+      input(type="submit", value="Rechercher")
+
+    h2 Rechercher par classement
+    form(action='/reviews/result', method='get')
+      label Nombre d'étoile : 
+      input(type="text", name="stars", id="stars")
+      input(type="submit", value="Rechercher")
+
+    h2 Rechercher par type
+    form(action='/reviews/result', method='get')
+      label Type : 
+      input(type="text", name="type", id="type")
+      input(type="submit", value="Rechercher")

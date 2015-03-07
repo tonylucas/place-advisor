@@ -1,17 +1,19 @@
 extends layout
 
 block content
-  a(href='/reviews') <-
+  
 
   if msg
     center
       h1= msg
  
   else
-    center
-      h1= review.name
-      a(href='/reviews/#{review.id}/edit')
-        img(src='https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/new-24-128.png' height="30")
-        br
-        a(href='/reviews/#{review.id}/delete')
-          img(src='http://t1.gstatic.com/images?q=tbn:ANd9GcQCjIGT3gxgEoL02qdZQvV3zQauUrJSOXU5g1AbDhsJuG0Yr84-0TKYp40L0w' height="60")
+    a(href='/reviews/edit/#{review.id}')
+      img(src='https://cdn2.iconfinder.com/data/icons/flat-ui-icons-24-px/24/new-24-128.png', onClick='showEditForm(true)' height="30")
+
+    h1= review.name
+    h2= review.placeType
+    - for (var x = 0; x < review.stars; x++)
+      img(src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/star-128.png" height="20")
+    br
+    a(href='/reviews') ALL REVIEWS
